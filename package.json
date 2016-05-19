@@ -6,8 +6,11 @@
   "scripts": {
     "postinstall": "bower install",
     "build": "browserify node-siren-parser.js -s D2L.Siren.Parse -o siren-parser.js",
-    "serve": "npm run build && polyserve -p 8081",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "polyserve -p 8081",
+    "test:lint:js": "eslint test/ --ext .js",
+    "test:lint:html": "eslint *.html",
+    "test": "npm run test:lint:js && npm run test:lint:html && wct",
+    "test:no-lint": "wct -p"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -21,6 +24,7 @@
     "browserify": "^13.0.1",
     "eslint": "^2.4.0",
     "eslint-plugin-html": "^1.4.0",
-    "polyserve": "^0.12.0"
+    "polyserve": "^0.12.0",
+    "web-component-tester": "^4.2.2"
   }
 }

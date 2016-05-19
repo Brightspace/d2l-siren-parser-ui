@@ -27,6 +27,12 @@ Install dependencies
 npm install
 ```
 
+If updating node-siren-parser, also build. The built output should be committed.
+
+```shell
+npm run build
+```
+
 ## Testing
 
 ```
