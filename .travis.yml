@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- 4
+sudo: false
+addons:
+  firefox: latest
+before_script:
+- npm run test:lint:js
+- npm run test:lint:html
+script:
+- xvfb-run wct
