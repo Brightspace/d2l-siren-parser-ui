@@ -1,0 +1,26 @@
+{
+  "name": "d2l-siren-parser",
+  "version": "0.0.1",
+  "description": "Web component wrapper for node-siren-parser. Used to parse a Siren object or string into an Entity.",
+  "main": "d2l-siren-parser",
+  "scripts": {
+    "postinstall": "bower install",
+    "build": "browserify node-siren-parser.js -s D2L.Siren.Parse -o siren-parser.js",
+    "serve": "npm run build && polyserve -p 8081",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@d2l/siren-parser": "^4.0.1"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.9.0",
+    "babelify": "^7.3.0",
+    "bower": "^1.7.9",
+    "browserify": "^13.0.1",
+    "eslint": "^2.4.0",
+    "eslint-plugin-html": "^1.4.0",
+    "polyserve": "^0.12.0"
+  }
+}

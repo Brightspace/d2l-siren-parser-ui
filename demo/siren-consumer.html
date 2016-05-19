@@ -1,0 +1,114 @@
+<link rel="import" href="../d2l-siren-parser.html">
+
+<dom-module id="siren-consumer">
+	<template>
+		<d2l-siren-parser data="{{ parseData() }}"></d2l-siren-parser>
+
+		<h1>Parsed Result</h1>
+
+		<h2>Classes:</h2>
+		<template
+			is="dom-repeat"
+			items="[[parsed.class]]">
+			<div>{{item}}</div>
+		</template>
+
+		<h2>Properties:</h2>
+		<template
+			is="dom-repeat"
+			items="[[getPropertyNames(parsed.properties)]]">
+			<div>[[item]]: [[getPropertyValue(parsed.properties, item)]]</div>
+		</template>
+
+		<h2>Links:</h2>
+		<template
+			is="dom-repeat"
+			items="[[parsed.links]]">
+			<div>rel: {{getArrayValue(item.rel, 0)}}, href: {{item.href}}</div>
+		</template>
+
+		<h2>Actions:</h2>
+		<template
+			is="dom-repeat"
+			items="[[parsed.actions]]">
+			<div>name: {{item.name}}</div>
+		</template>
+
+		<h2>Entities</h2>
+		<div>Count: {{parsed.entities.length}}</div>
+	</template>
+	<script>
+		Polymer({
+			is: 'siren-consumer',
+			properties: {
+				parsed: {
+					type: Object
+				}
+			},
+			parseData: function() {
+				var parser = document.createElement('d2l-siren-parser');
+				this.parsed = parser.parse(this.getSirenData());
+			},
+			getPropertyNames: function(obj) {
+				if (obj) {
+					return Object.getOwnPropertyNames(obj);
+				}
+
+				return [];
+			},
+			getPropertyValue: function (obj, propName) {
+				return obj[propName];
+			},
+			getArrayValue: function (array, index) {
+				return array[index];
+			},
+			getSirenData: function () {
+				return {
+					"class": [ "order" ],
+					"properties": {
+						"orderNumber": 42,
+						"itemCount": 3,
+						"status": "pending"
+					},
+					"entities": [
+						{
+							"class": [ "items", "collection" ],
+							"rel": [ "http://x.io/rels/order-items" ],
+							"href": "http://api.x.io/orders/42/items"
+						},
+						{
+							"class": [ "info", "customer" ],
+							"rel": [ "http://x.io/rels/customer" ],
+							"properties": {
+								"customerId": "pj123",
+								"name": "Peter Joseph"
+							},
+							"links": [
+								{ "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }
+							]
+						}
+					],
+					"actions": [
+						{
+							"name": "add-item",
+							"title": "Add Item",
+							"method": "POST",
+							"href": "http://api.x.io/orders/42/items",
+							"type": "application/x-www-form-urlencoded",
+							"fields": [
+								{ "name": "orderNumber", "type": "hidden", "value": "42" },
+								{ "name": "productCode", "type": "text" },
+								{ "name": "quantity", "type": "number" }
+							]
+						}
+					],
+					"links": [
+						{ "rel": [ "self" ], "href": "http://api.x.io/orders/42" },
+						{ "rel": [ "previous" ], "href": "http://api.x.io/orders/41" },
+						{ "rel": [ "next" ], "href": "http://api.x.io/orders/43" }
+					]
+				};
+			}
+		});
+	</script>
+</dom-module>
