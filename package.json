@@ -1,6 +1,6 @@
 {
   "name": "d2l-siren-parser",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Web component wrapper for node-siren-parser. Used to parse a Siren object or string into an Entity.",
   "main": "d2l-siren-parser",
   "scripts": {
