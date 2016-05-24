@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('@d2l/siren-parser');
+module.exports = require('siren-parser');
