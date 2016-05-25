@@ -2,7 +2,6 @@
   "name": "d2l-siren-parser",
   "description": "Web component wrapper for node-siren-parser. Used to parse a Siren object or string into an Entity.",
   "license": "Apache-2.0",
-  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
