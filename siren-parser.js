@@ -9,7 +9,8 @@ module.exports = require('siren-parser');
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 var assert = require('./assert'),
-    Field = require('./Field');
+    Field = require('./Field'),
+    util = require('./util');
 
 function Action(action) {
 	var _this = this;
@@ -75,7 +76,7 @@ function Action(action) {
 }
 
 Action.prototype.hasClass = function (cls) {
-	return this.class instanceof Array && this.class.indexOf(cls) > -1;
+	return this.class instanceof Array && util.contains(this.class, cls);
 };
 
 Action.prototype.hasField = function (fieldName) {
@@ -83,15 +84,15 @@ Action.prototype.hasField = function (fieldName) {
 };
 
 Action.prototype.hasFieldByName = function (fieldName) {
-	return this._fieldsByName.hasOwnProperty(fieldName);
+	return util.hasProperty(this._fieldsByName, fieldName);
 };
 
 Action.prototype.hasFieldByClass = function (fieldClass) {
-	return this._fieldsByClass.hasOwnProperty(fieldClass);
+	return util.hasProperty(this._fieldsByClass, fieldClass);
 };
 
 Action.prototype.hasFieldByType = function (fieldType) {
-	return this._fieldsByType.hasOwnProperty(fieldType);
+	return util.hasProperty(this._fieldsByType, fieldType);
 };
 
 Action.prototype.getField = function (fieldName) {
@@ -99,45 +100,38 @@ Action.prototype.getField = function (fieldName) {
 };
 
 Action.prototype.getFieldByName = function (fieldName) {
-	return this._fieldsByName[fieldName];
+	return util.getMatchingValue(this._fieldsByName, fieldName);
 };
 
 Action.prototype.getFieldByClass = function (fieldClass) {
-	return this._getFirstOrUndefined('_fieldsByClass', fieldClass);
-};
-
-Action.prototype.getFieldsByClass = function (fieldClass) {
-	return this._getSetOrEmpty('_fieldsByClass', fieldClass);
-};
-
-Action.prototype.getFieldByType = function (fieldType) {
-	return this._getFirstOrUndefined('_fieldsByType', fieldType);
-};
-
-Action.prototype.getFieldsByType = function (fieldType) {
-	return this._getSetOrEmpty('_fieldsByType', fieldType);
-};
-
-Action.prototype._getFirstOrUndefined = function (set, key) {
-	var vals = this[set][key];
-
+	var vals = util.getMatchingValue(this._fieldsByClass, fieldClass);
 	return vals ? vals[0] : undefined;
 };
 
-Action.prototype._getSetOrEmpty = function (set, key) {
-	var vals = this[set][key];
+Action.prototype.getFieldsByClass = function (fieldClass) {
+	var vals = util.getMatchingValue(this._fieldsByClass, fieldClass);
+	return vals ? vals.slice() : [];
+};
 
+Action.prototype.getFieldByType = function (fieldType) {
+	var vals = util.getMatchingValue(this._fieldsByType, fieldType);
+	return vals ? vals[0] : undefined;
+};
+
+Action.prototype.getFieldsByType = function (fieldType) {
+	var vals = util.getMatchingValue(this._fieldsByType, fieldType);
 	return vals ? vals.slice() : [];
 };
 
 module.exports = Action;
 
-},{"./Field":4,"./assert":6}],3:[function(require,module,exports){
+},{"./Field":4,"./assert":6,"./util":7}],3:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var assert = require('./assert');
+var assert = require('./assert'),
+    util = require('./util');
 
 var Action = require('./Action'),
     Link = require('./Link');
@@ -286,23 +280,23 @@ Entity.prototype.hasAction = function (actionName) {
 };
 
 Entity.prototype.hasActionByName = function (actionName) {
-	return this._actionsByName.hasOwnProperty(actionName);
+	return util.hasProperty(this._actionsByName, actionName);
 };
 
 Entity.prototype.hasActionByClass = function (actionClass) {
-	return this._actionsByClass.hasOwnProperty(actionClass);
+	return util.hasProperty(this._actionsByClass, actionClass);
 };
 
 Entity.prototype.hasActionByMethod = function (actionMethod) {
-	return this._actionsByMethod.hasOwnProperty(actionMethod);
+	return util.hasProperty(this._actionsByMethod, actionMethod);
 };
 
 Entity.prototype.hasActionByType = function (actionType) {
-	return this._actionsByType.hasOwnProperty(actionType);
+	return util.hasProperty(this._actionsByType, actionType);
 };
 
 Entity.prototype.hasClass = function (cls) {
-	return this.class instanceof Array && this.class.indexOf(cls) > -1;
+	return this.class instanceof Array && util.contains(this.class, cls);
 };
 
 Entity.prototype.hasEntity = function (entityRel) {
@@ -310,15 +304,15 @@ Entity.prototype.hasEntity = function (entityRel) {
 };
 
 Entity.prototype.hasEntityByRel = function (entityRel) {
-	return this._entitiesByRel.hasOwnProperty(entityRel);
+	return util.hasProperty(this._entitiesByRel, entityRel);
 };
 
 Entity.prototype.hasEntityByClass = function (entityClass) {
-	return this._entitiesByClass.hasOwnProperty(entityClass);
+	return util.hasProperty(this._entitiesByClass, entityClass);
 };
 
 Entity.prototype.hasEntityByType = function (entityType) {
-	return this._entitiesByType.hasOwnProperty(entityType);
+	return util.hasProperty(this._entitiesByType, entityType);
 };
 
 Entity.prototype.hasLink = function (linkRel) {
@@ -326,19 +320,19 @@ Entity.prototype.hasLink = function (linkRel) {
 };
 
 Entity.prototype.hasLinkByRel = function (linkRel) {
-	return this._linksByRel.hasOwnProperty(linkRel);
+	return util.hasProperty(this._linksByRel, linkRel);
 };
 
 Entity.prototype.hasLinkByClass = function (linkClass) {
-	return this._linksByClass.hasOwnProperty(linkClass);
+	return util.hasProperty(this._linksByClass, linkClass);
 };
 
 Entity.prototype.hasLinkByType = function (linkType) {
-	return this._linksByType.hasOwnProperty(linkType);
+	return util.hasProperty(this._linksByType, linkType);
 };
 
 Entity.prototype.hasProperty = function (property) {
-	return this.hasOwnProperty('properties') && this.properties.hasOwnProperty(property);
+	return util.hasProperty(this, 'properties') && util.hasProperty(this.properties, property);
 };
 
 Entity.prototype.getAction = function (actionName) {
@@ -346,31 +340,37 @@ Entity.prototype.getAction = function (actionName) {
 };
 
 Entity.prototype.getActionByName = function (actionName) {
-	return this._actionsByName[actionName];
+	return util.getMatchingValue(this._actionsByName, actionName);
 };
 
 Entity.prototype.getActionByClass = function (actionClass) {
-	return this._getFirstOrUndefined('_actionsByClass', actionClass);
+	var vals = util.getMatchingValue(this._actionsByClass, actionClass);
+	return vals ? vals[0] : undefined;
 };
 
 Entity.prototype.getActionsByClass = function (actionClass) {
-	return this._getSetOrEmpty('_actionsByClass', actionClass);
+	var vals = util.getMatchingValue(this._actionsByClass, actionClass);
+	return vals ? vals.slice() : [];
 };
 
 Entity.prototype.getActionByMethod = function (actionMethod) {
-	return this._getFirstOrUndefined('_actionsByMethod', actionMethod);
+	var vals = util.getMatchingValue(this._actionsByMethod, actionMethod);
+	return vals ? vals[0] : undefined;
 };
 
 Entity.prototype.getActionsByMethod = function (actionMethod) {
-	return this._getSetOrEmpty('_actionsByMethod', actionMethod);
+	var vals = util.getMatchingValue(this._actionsByMethod, actionMethod);
+	return vals ? vals.slice() : [];
 };
 
 Entity.prototype.getActionByType = function (actionType) {
-	return this._getFirstOrUndefined('_actionsByType', actionType);
+	var vals = util.getMatchingValue(this._actionsByType, actionType);
+	return vals ? vals[0] : undefined;
 };
 
 Entity.prototype.getActionsByType = function (actionType) {
-	return this._getSetOrEmpty('_actionsByType', actionType);
+	var vals = util.getMatchingValue(this._actionsByType, actionType);
+	return vals ? vals.slice() : [];
 };
 
 Entity.prototype.getLink = function (linkRel) {
@@ -382,27 +382,33 @@ Entity.prototype.getLinks = function (linkRel) {
 };
 
 Entity.prototype.getLinkByRel = function (linkRel) {
-	return this._getFirstOrUndefined('_linksByRel', linkRel);
+	var vals = util.getMatchingValue(this._linksByRel, linkRel);
+	return vals ? vals[0] : undefined;
 };
 
 Entity.prototype.getLinksByRel = function (linkRel) {
-	return this._getSetOrEmpty('_linksByRel', linkRel);
+	var vals = util.getMatchingValue(this._linksByRel, linkRel);
+	return vals ? vals.slice() : [];
 };
 
 Entity.prototype.getLinkByClass = function (linkClass) {
-	return this._getFirstOrUndefined('_linksByClass', linkClass);
+	var vals = util.getMatchingValue(this._linksByClass, linkClass);
+	return vals ? vals[0] : undefined;
 };
 
 Entity.prototype.getLinksByClass = function (linkClass) {
-	return this._getSetOrEmpty('_linksByClass', linkClass);
+	var vals = util.getMatchingValue(this._linksByClass, linkClass);
+	return vals ? vals.slice() : [];
 };
 
 Entity.prototype.getLinkByType = function (linkType) {
-	return this._getFirstOrUndefined('_linksByType', linkType);
+	var vals = util.getMatchingValue(this._linksByType, linkType);
+	return vals ? vals[0] : undefined;
 };
 
 Entity.prototype.getLinksByType = function (linkType) {
-	return this._getSetOrEmpty('_linksByType', linkType);
+	var vals = util.getMatchingValue(this._linksByType, linkType);
+	return vals ? vals.slice() : [];
 };
 
 Entity.prototype.getSubEntity = function (entityRel) {
@@ -414,49 +420,44 @@ Entity.prototype.getSubEntities = function (entityRel) {
 };
 
 Entity.prototype.getSubEntityByRel = function (entityRel) {
-	return this._getFirstOrUndefined('_entitiesByRel', entityRel);
-};
-
-Entity.prototype.getSubEntitiesByRel = function (entityRel) {
-	return this._getSetOrEmpty('_entitiesByRel', entityRel);
-};
-
-Entity.prototype.getSubEntityByClass = function (entityClass) {
-	return this._getFirstOrUndefined('_entitiesByClass', entityClass);
-};
-
-Entity.prototype.getSubEntitiesByClass = function (entityClass) {
-	return this._getSetOrEmpty('_entitiesByClass', entityClass);
-};
-
-Entity.prototype.getSubEntityByType = function (entityType) {
-	return this._getFirstOrUndefined('_entitiesByType', entityType);
-};
-
-Entity.prototype.getSubEntitiesByType = function (entityType) {
-	return this._getSetOrEmpty('_entitiesByType', entityType);
-};
-
-Entity.prototype._getFirstOrUndefined = function (set, key) {
-	var vals = this[set][key];
-
+	var vals = util.getMatchingValue(this._entitiesByRel, entityRel);
 	return vals ? vals[0] : undefined;
 };
 
-Entity.prototype._getSetOrEmpty = function (set, key) {
-	var vals = this[set][key];
+Entity.prototype.getSubEntitiesByRel = function (entityRel) {
+	var vals = util.getMatchingValue(this._entitiesByRel, entityRel);
+	return vals ? vals.slice() : [];
+};
 
+Entity.prototype.getSubEntityByClass = function (entityClass) {
+	var vals = util.getMatchingValue(this._entitiesByClass, entityClass);
+	return vals ? vals[0] : undefined;
+};
+
+Entity.prototype.getSubEntitiesByClass = function (entityClass) {
+	var vals = util.getMatchingValue(this._entitiesByClass, entityClass);
+	return vals ? vals.slice() : [];
+};
+
+Entity.prototype.getSubEntityByType = function (entityType) {
+	var vals = util.getMatchingValue(this._entitiesByType, entityType);
+	return vals ? vals[0] : undefined;
+};
+
+Entity.prototype.getSubEntitiesByType = function (entityType) {
+	var vals = util.getMatchingValue(this._entitiesByType, entityType);
 	return vals ? vals.slice() : [];
 };
 
 module.exports = Entity;
 
-},{"./Action":2,"./Link":5,"./assert":6}],4:[function(require,module,exports){
+},{"./Action":2,"./Link":5,"./assert":6,"./util":7}],4:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var assert = require('./assert');
+var assert = require('./assert'),
+    util = require('./util');
 
 var VALID_TYPES = ['hidden', 'text', 'search', 'tel', 'url', 'email', 'password', 'datetime', 'date', 'month', 'week', 'time', 'datetime-local', 'number', 'range', 'color', 'checkbox', 'radio', 'file'];
 
@@ -494,17 +495,18 @@ function Field(field) {
 }
 
 Field.prototype.hasClass = function (cls) {
-	return this.class instanceof Array && this.class.indexOf(cls) > -1;
+	return this.class instanceof Array && util.contains(this.class, cls);
 };
 
 module.exports = Field;
 
-},{"./assert":6}],5:[function(require,module,exports){
+},{"./assert":6,"./util":7}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var assert = require('./assert');
+var assert = require('./assert'),
+    util = require('./util');
 
 function Link(link) {
 	if (link instanceof Link) {
@@ -538,18 +540,62 @@ function Link(link) {
 }
 
 Link.prototype.hasClass = function (cls) {
-	return this.class instanceof Array && this.class.indexOf(cls) > -1;
+	return this.class instanceof Array && util.contains(this.class, cls);
 };
 
 module.exports = Link;
 
-},{"./assert":6}],6:[function(require,module,exports){
+},{"./assert":6,"./util":7}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = function (expectation, msg) {
 	if (!expectation) {
 		throw new Error(msg);
 	}
+};
+
+},{}],7:[function(require,module,exports){
+'use strict';
+
+function contains(arrayLike, stringOrRegex) {
+	if ('string' === typeof stringOrRegex) {
+		return arrayLike.indexOf(stringOrRegex) > -1;
+	}
+
+	var match = arrayLike.find(function (item) {
+		return item.match(stringOrRegex);
+	});
+
+	return match !== undefined;
+}
+
+function hasProperty(objectLike, stringOrRegex) {
+	if ('string' === typeof stringOrRegex) {
+		return objectLike.hasOwnProperty(stringOrRegex);
+	}
+
+	return contains(Object.keys(objectLike), stringOrRegex);
+}
+
+function getMatchingValue(objectLike, stringOrRegex) {
+	if ('string' === typeof stringOrRegex) {
+		return objectLike[stringOrRegex];
+	}
+
+	var keys = Object.keys(objectLike);
+	for (var i = 0; i < keys.length; i++) {
+		var key = keys[i];
+
+		if (key.match(stringOrRegex)) {
+			return objectLike[key];
+		}
+	}
+}
+
+module.exports = {
+	contains: contains,
+	hasProperty: hasProperty,
+	getMatchingValue: getMatchingValue
 };
 
 },{}]},{},[1])(1)
