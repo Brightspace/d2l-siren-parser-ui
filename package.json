@@ -15,7 +15,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "siren-parser": "^5.1.0"
+    "siren-parser": "^5.1.1"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.9.0",
