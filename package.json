@@ -5,7 +5,7 @@
   "main": "d2l-siren-parser",
   "scripts": {
     "postinstall": "bower install",
-    "build": "browserify node-siren-parser.js -s D2L.Siren.Parse -o siren-parser.js",
+    "build": "browserify node-siren-parser.js -o siren-parser.js",
     "serve": "polyserve -p 8081",
     "test:lint:js": "eslint test/ --ext .js",
     "test:lint:html": "eslint *.html",
